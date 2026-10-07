@@ -1,0 +1,413 @@
+<!doctype html>
+<html lang="th">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Waste · Descriptive Dashboard</title>
+    <style>
+        :root {
+            --green: #16695d;
+            --navy: #173c45;
+            --paper: #f3f5ef;
+            --orange: #db8350
+        }
+
+        * {
+            box-sizing: border-box
+        }
+
+        body {
+            margin: 0;
+            background: var(--paper);
+            color: #203b3c;
+            font: 16px/1.65 'Leelawadee UI', Tahoma, sans-serif
+        }
+
+        header {
+            background: var(--navy);
+            color: white;
+            padding: 30px max(24px, 5vw)
+        }
+
+        header small {
+            color: #b7d8cd;
+            letter-spacing: 2px
+        }
+
+        h1 {
+            font-size: 34px;
+            margin: 5px 0
+        }
+
+        header p {
+            margin: 0;
+            color: #d3e2de
+        }
+
+        main {
+            max-width: 1400px;
+            margin: auto;
+            padding: 24px
+        }
+
+        nav {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 22px
+        }
+
+        button,
+        select,
+        input {
+            font: inherit
+        }
+
+        button {
+            cursor: pointer;
+            border: 1px solid #c6d3cb;
+            background: white;
+            border-radius: 9px;
+            padding: 9px 16px;
+            color: var(--navy)
+        }
+
+        button.active {
+            background: var(--green);
+            color: white;
+            border-color: var(--green)
+        }
+
+        button:hover {
+            filter: brightness(.94)
+        }
+
+        .filters {
+            display: flex;
+            gap: 16px;
+            align-items: end;
+            flex-wrap: wrap;
+            margin-bottom: 20px
+        }
+
+        label {
+            display: flex;
+            flex-direction: column;
+            font-size: 14px;
+            font-weight: bold;
+            gap: 4px
+        }
+
+        select {
+            padding: 9px 12px;
+            min-width: 155px;
+            border: 1px solid #c6d3cb;
+            border-radius: 8px;
+            background: white;
+            color: var(--navy)
+        }
+
+        .kpis {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px
+        }
+
+        .card {
+            background: white;
+            border: 1px solid #e0e7dd;
+            border-radius: 15px;
+            padding: 22px;
+            margin-bottom: 18px;
+            min-width: 0
+        }
+
+        .kpis .card {
+            border-top: 4px solid var(--green)
+        }
+
+        .value {
+            font-size: 29px;
+            font-weight: 700;
+            color: var(--green)
+        }
+
+        .muted {
+            color: #667d76;
+            font-size: 13px
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px
+        }
+
+        h2 {
+            font-size: 20px;
+            margin: 0 0 10px
+        }
+
+        h3 {
+            font-size: 17px
+        }
+
+        .insight {
+            padding: 16px 20px;
+            background: #e0eee4;
+            border-left: 4px solid var(--green);
+            border-radius: 8px;
+            margin-bottom: 20px
+        }
+
+        .bars {
+            display: flex;
+            flex-direction: column;
+            gap: 9px
+        }
+
+        .barrow {
+            display: grid;
+            grid-template-columns: 145px 1fr 85px;
+            gap: 10px;
+            align-items: center;
+            font-size: 13px
+        }
+
+        .track {
+            background: #eff3ee;
+            height: 20px;
+            border-radius: 4px;
+            overflow: hidden
+        }
+
+        .fill {
+            height: 100%;
+            background: var(--green);
+            border-radius: 4px
+        }
+
+        .barrow:first-child .fill {
+            background: var(--navy)
+        }
+
+        .barrow span:last-child {
+            text-align: right;
+            font-variant-numeric: tabular-nums
+        }
+
+        .scroll {
+            overflow: auto;
+            max-height: 410px
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            font-size: 14px;
+            white-space: nowrap
+        }
+
+        th,
+        td {
+            text-align: right;
+            padding: 10px 14px;
+            border-bottom: 1px solid #e4eae3
+        }
+
+        th {
+            position: sticky;
+            top: 0;
+            background: #e9f1eb
+        }
+
+        td:first-child,
+        th:first-child {
+            text-align: left
+        }
+
+        svg {
+            width: 100%;
+            height: auto;
+            display: block
+        }
+
+        svg text {
+            font-family: Tahoma, sans-serif;
+            fill: #526b64;
+            font-size: 12px
+        }
+
+        .hidden {
+            display: none !important
+        }
+
+        .error {
+            color: #a53627;
+            background: #fff0e9;
+            padding: 12px;
+            border-radius: 8px
+        }
+
+        .upload {
+            padding: 24px;
+            border: 2px dashed #a8c4b1;
+            background: #f8fbf5;
+            border-radius: 12px;
+            margin-bottom: 18px
+        }
+
+        footer {
+            padding: 24px;
+            color: #637b71;
+            font-size: 13px;
+            border-top: 1px solid #d4dfd1
+        }
+
+        .legend {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            font-size: 13px;
+            margin: 10px 0
+        }
+
+        .dot {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 3px;
+            margin-right: 5px
+        }
+
+        a {
+            color: var(--green)
+        }
+
+        @media(max-width:850px) {
+            .kpis {
+                grid-template-columns: 1fr 1fr
+            }
+
+            .grid {
+                grid-template-columns: 1fr
+            }
+
+            h1 {
+                font-size: 27px
+            }
+
+            main {
+                padding: 16px
+            }
+
+            .barrow {
+                grid-template-columns: 115px 1fr 72px
+            }
+
+            .card {
+                padding: 16px
+            }
+        }
+
+        @media print {
+            header {
+                background: white;
+                color: black
+            }
+
+            nav,
+            .filters,
+            .upload,
+            button {
+                display: none
+            }
+
+            .card {
+                break-inside: avoid
+            }
+
+            .scroll {
+                max-height: none
+            }
+
+            .hidden {
+                display: none !important
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header><small>DESCRIPTIVE ANALYTICS / GROUP PROJECT</small>
+        <h1>สถานการณ์ขยะประเทศไทย</h1>
+        <p>สำรวจข้อมูลจริง เปรียบเทียบพื้นที่ และอธิบายแนวโน้มย้อนหลัง</p>
+    </header>
+    <main>
+        <nav aria-label="หัวข้อ"><button class="active" data-tab="overview">ภาพรวมขยะ</button><button
+                data-tab="disposal">การจัดการขยะ</button></nav>
+        <section id="wasteFilters" class="filters"><label>ปี พ.ศ.<select
+                    id="year"></select></label><label>พื้นที่ที่สนใจ<select id="province">
+                    <option value="">ทุกจังหวัด</option>
+                </select></label><button id="download">ดาวน์โหลดตารางที่เลือก</button><button
+                onclick="window.print()">พิมพ์ / บันทึก PDF</button><span
+                class="muted">เลือกจังหวัดเพื่อดูรายละเอียดและแนวโน้มของจังหวัดนั้น</span></section>
+        <section id="overview">
+            <div id="kpis" class="kpis"></div>
+            <div id="overviewText" class="insight"></div>
+            <div class="grid">
+                <article class="card">
+                    <h2>แนวโน้มปริมาณขยะ 7 ปี</h2>
+                    <p class="muted">ตัน/วัน · แสดงครบทุกปีของพื้นที่ที่เลือก</p>
+                    <div id="trend"></div>
+                </article>
+                <article class="card">
+                    <h2>10 จังหวัดที่มีปริมาณขยะสูงสุด</h2>
+                    <p class="muted">ตัน/วัน · อันดับทั้งประเทศในปีที่เลือก</p>
+                    <div id="topGenerated" class="bars"></div>
+                </article>
+            </div>
+            <div class="grid">
+                <article class="card">
+                    <h2>การกระจายของ 77 จังหวัด</h2>
+                    <p class="muted">จำนวนจังหวัดตามช่วงปริมาณขยะ · ช่วงปริมาณกว้างไม่เท่ากัน</p>
+                    <div id="hist" class="bars"></div>
+                </article>
+                <article class="card">
+                    <h2>ข้อมูลปีที่เลือก</h2>
+                    <div id="dataTable" class="scroll"></div>
+                </article>
+            </div>
+        </section>
+        <section id="disposal" class="hidden">
+            <div id="disposalKpis" class="kpis"></div>
+            <div id="disposalText" class="insight"></div>
+            <div class="grid">
+                <article class="card">
+                    <h2>10 จังหวัดสัดส่วนกำจัดไม่ถูกต้องสูงสุด</h2>
+                    <p class="muted">ขยะกำจัดไม่ถูกต้อง ÷ ขยะเกิดขึ้น × 100 · อันดับทั้งประเทศ</p>
+                    <div id="topIncorrect" class="bars"></div>
+                </article>
+                <article class="card">
+                    <h2>สัดส่วนการจัดการย้อนหลัง</h2>
+                    <p class="muted">ร้อยละของขยะเกิดขึ้นในพื้นที่ที่เลือก</p>
+                    <div id="stacked"></div>
+                    <div class="legend"><span><i class="dot" style="background:#168479"></i>นำกลับมาใช้</span><span><i
+                                class="dot" style="background:#173c45"></i>กำจัดถูกต้อง</span><span><i class="dot"
+                                style="background:#db8350"></i>กำจัดไม่ถูกต้อง</span></div>
+                    <p class="muted">ยอดบางปีอาจไม่เท่ากับ 100% จากตัวเลขต้นทาง ไม่ปรับยอดให้ครบ 100% โดยอัตโนมัติ</p>
+                </article>
+            </div>
+        </section>
+
+
+        <footer>ข้อมูลขยะ: 77 จังหวัด พ.ศ. 2561–2567 · ต้นทาง data32_40_1.csv และชีต “ขยะ รายจังหวัด” ตาม notebook
+            ที่แนบ<br>แดชบอร์ดนี้เป็น Descriptive Analytics ยังไม่มีโมเดลทำนาย ·
+            สัดส่วนรวมใช้ผลรวมตัวตั้งหารด้วยผลรวมตัวหาร</footer>
+    </main>
+    <script src="./data.js"></script>
+    <script src="./app.js"></script>
+</body>
+
+</html>
